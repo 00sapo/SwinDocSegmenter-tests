@@ -30,3 +30,8 @@ post-install = "sh make.sh"
 
 [tool.pdm.options]
 add = ["--no-isolation", "--no-self"]
+
+[tool.pdm.dev-dependencies]
+dev = [
+    "ipdb>=0.13.13",
+]

@@ -1,3 +1,4 @@
+import cv2
 import detectron2.utils.comm as comm
 import torch
 from detectron2.checkpoint import DetectionCheckpointer
@@ -35,9 +36,16 @@ DetectionCheckpointer(model).load(
     "../swindocsegmenter/model_final_prima_swindocseg.pth"
 )  # load a file, usually from cfg.MODEL.WEIGHTS
 
-checkpointer = DetectionCheckpointer(model, save_dir="output")
-# checkpointer.save("model_999")  # save to output/model_999.pth
-__import__("ipdb").set_trace()
+img = cv2.imread("../LaudareAugmentation/image_tests/laudare/Cortona1.png")
+# resize and normalize image into [0,1]
+img = cv2.resize(img, (img.shape[1] // 2, img.shape[0] // 2))
+# BGR to RGB
+img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+# HWC to CHW format
+img = torch.tensor(img).permute(2, 0, 1)
+# float32 format
+img = img.float() / 255.0
+
 model.eval()
-# with torch.no_grad():
-#     outputs = model(inputs)
+with torch.no_grad():
+    outputs = model([{"image": img, "height": 1024, "width": 1024}])

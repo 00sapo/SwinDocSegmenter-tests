@@ -1,4 +1,4 @@
-BASE_: ./Base-COCO-InstanceSegmentation.yaml
+_BASE_: ./Base-COCO-InstanceSegmentation.yaml
 MODEL:
   META_ARCHITECTURE: "MaskDINO"
   BACKBONE:
@@ -47,7 +47,7 @@ MODEL:
     NUM_OBJECT_QUERIES: 300
     NHEADS: 8
     DROPOUT: 0.0
-    DIM_FEEDFORWARD: 1024
+    DIM_FEEDFORWARD: 2048
     ENC_LAYERS: 0
     PRE_NORM: False
     ENFORCE_INPUT_PROJ: False
@@ -69,14 +69,14 @@ MODEL:
       OVERLAP_THRESHOLD: 0.8
       OBJECT_MASK_THRESHOLD: 0.25
 
-DATASETS:
-  TRAIN: ("prima_train",)
-  TEST: ("prima_val",)
+# DATASETS:
+#   TRAIN: ("prima_train",)
+#   TEST: ("prima_val",)
 
-SOLVER:
-  AMP:
-    ENABLED: True
+# SOLVER:
+#   AMP:
+#     ENABLED: True
 TEST:
   EVAL_PERIOD: 1000
 #  EVAL_FLAG: 1
-OUTPUT_DIR: "/data2/users/abanerjee/output_prima_fewx"
+# OUTPUT_DIR: "/data2/users/abanerjee/output_prima_fewx"
