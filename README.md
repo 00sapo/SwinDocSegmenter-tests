@@ -16,3 +16,9 @@
 9. Check the `test.png` image
 
 N.B. Tensorflow may requires NCCL (not sure)
+
+## Examples
+
+![Newspaper](./example_segmented0.png)
+
+![Cortonese](./example_segmented1.png)
