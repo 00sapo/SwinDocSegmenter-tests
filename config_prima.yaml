@@ -68,15 +68,13 @@ MODEL:
       PANOPTIC_ON: False
       OVERLAP_THRESHOLD: 0.8
       OBJECT_MASK_THRESHOLD: 0.25
-
 # DATASETS:
 #   TRAIN: ("prima_train",)
-#   TEST: ("prima_val",)
-
+# TEST: ("prima_val",)
 # SOLVER:
 #   AMP:
 #     ENABLED: True
-TEST:
-  EVAL_PERIOD: 1000
+# TEST:
+#   EVAL_PERIOD: 1000
 #  EVAL_FLAG: 1
 # OUTPUT_DIR: "/data2/users/abanerjee/output_prima_fewx"
