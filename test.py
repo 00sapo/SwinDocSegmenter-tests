@@ -42,15 +42,15 @@ DetectionCheckpointer(model).load(
 )  # load a file, usually from cfg.model.weights
 
 img = cv2.imread("../LaudareAugmentation/image_tests/laudare/Cortona1.png")
-# resize and normalize image into [0,1]
-# img = cv2.resize(img, (img.shape[1] // 2, img.shape[0] // 2))
-img = cv2.resize(img, (1024, 1024))
+# resize for faster inference and RAM saving
+img = cv2.resize(img, (img.shape[1] // 2, img.shape[0] // 2))
+# img = cv2.resize(img, (1024, 1024))
 # bgr to rgb
-img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+img_ = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 # hwc to chw format
-img = torch.tensor(img).permute(2, 0, 1)
+img_ = torch.tensor(img_).permute(2, 0, 1)
 # float32 format
-img = img.float() / 255.0
+img_ = img_.float()
 
 classes = np.asarray(
     [
@@ -66,7 +66,7 @@ classes = np.asarray(
 
 model.eval()
 with torch.no_grad():
-    outputs = model([{"image": img, "height": img.shape[1], "width": img.shape[2]}])
+    outputs = model([{"image": img_, "height": img_.shape[1], "width": img_.shape[2]}])
 
 
 COLORS = [
@@ -104,15 +104,23 @@ def draw_box(img, box, color, label):
 for output in outputs:
     pred_classes = output["instances"].pred_classes.cpu().numpy()
     boxes = output["instances"].pred_boxes.tensor.cpu().numpy()
-    __import__("ipdb").set_trace()
+    # normalize boxes so that min-max is 0-1
+    min_x = boxes[:, 0].min()
+    min_y = boxes[:, 1].min()
+    max_x = boxes[:, 2].max()
+    max_y = boxes[:, 3].max()
+    boxes[:, 0] = (boxes[:, 0] - min_x) / (max_x - min_x)
+    boxes[:, 1] = (boxes[:, 1] - min_y) / (max_y - min_y)
+    boxes[:, 2] = (boxes[:, 2] - min_x) / (max_x - min_x)
+    boxes[:, 3] = (boxes[:, 3] - min_y) / (max_y - min_y)
+    # denormalize boxes to original image size
+    boxes[:, 0] = boxes[:, 0] * img.shape[1]
+    boxes[:, 1] = boxes[:, 1] * img.shape[0]
+    boxes[:, 2] = boxes[:, 2] * img.shape[1]
+    boxes[:, 3] = boxes[:, 3] * img.shape[0]
 
     # draw boxes on image
-    img = (img.permute(1, 2, 0).cpu().numpy() * 255).astype(np.uint8)
-    img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
-
     for i, box in enumerate(boxes):
         img = draw_box(img, box, pred_classes[i], pred_classes[i])
 
-    cv2.imshow("img", img)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    cv2.imwrite("test.png", img)
