@@ -11,7 +11,7 @@
 4. `pdm` (consider installing it via `pipx`)
 5. `pdm install --no-self --no-isolation`
 6. Download the weights from the SwinDocSegmenter repo
-7. Fix the paths to the weights in `test.py`
+7. Fix the paths to the weights and to the configuration in `test.py`
 8. Run `pdm run test.py`
 9. Check the `test.png` image
 

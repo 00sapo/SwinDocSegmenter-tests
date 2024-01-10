@@ -9,20 +9,40 @@ from detectron2.projects.deeplab import add_deeplab_config
 
 from maskdino.config import add_maskformer2_config
 
+# #####################################3
 WEIGHTS_PATH = "../swindocsegmenter/model_final_prima_swindocseg.pth"
-
+CONFIG_PATH = "./config_doclay.yaml"
 # Class names in the proper order
+# PRIMA config and weights:
+# CLASSES = np.asarray(
+#     [
+#         "Background",
+#         "TextRegion",
+#         "ImageRegion",
+#         "TableRegion",
+#         "MathsRegion",
+#         "SeparatorRegion",
+#         "OtherRegion",
+#     ]
+# )
+# OR
+# DocLayNet config and weights:
 CLASSES = np.asarray(
     [
-        "background",
-        "textregion",
-        "imageregion",
-        "tableregion",
-        "mathsregion",
-        "separatorregion",
-        "otherregion",
+        "Caption",
+        "Footnote",
+        "Formula",
+        "List-item",
+        "Page-footer",
+        "Page-header",
+        "Picture",
+        "Section-header",
+        "Table",
+        "Text",
+        "Title",
     ]
 )
+# #####################################3
 
 # Color for each class
 COLORS = [
@@ -33,6 +53,10 @@ COLORS = [
     (0, 255, 255),
     (255, 0, 255),
     (255, 255, 255),
+    (127, 0, 0),
+    (0, 127, 0),
+    (0, 0, 127),
+    (127, 127, 127),
 ]
 
 
@@ -82,7 +106,7 @@ def draw_box(img, box, color, label):
 
 
 # Load model and weights
-cfg = setup({"config_file": "./config_prima.yaml", "opts": []})
+cfg = setup({"config_file": CONFIG_PATH, "opts": []})
 model = build_model(cfg)  # returns a torch.nn.module
 DetectionCheckpointer(model).load(WEIGHTS_PATH)
 
